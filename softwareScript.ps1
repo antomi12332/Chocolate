@@ -9,6 +9,7 @@ $softwareList = @(
     "googlechrome",
     "inkscape",
     "intellijidea-community",
+    "irfanview",
     "k-litecodecpackfull",
     "nordvpn",
     "obs-studio",
