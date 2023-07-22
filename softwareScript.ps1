@@ -4,14 +4,13 @@ $softwareList = @(
     "firefox",
     "discord",
     "steam",
-    "magicavoxel",
+    "putty",
     "7zip",
     "github-desktop",
     "vscode",
     "filezilla",
     "intellijidea-community",
     "vlc",
-    "openvpn",
     "nordvpn",
     "obs-studio",
     "virtualbox",
@@ -19,7 +18,8 @@ $softwareList = @(
     "openjdk",
     "treesizefree",
     "twine",
-    "vnc-viewer"
+    "vnc-viewer",
+    "vmware-workstation-player"
 )
 
 foreach ($software in $softwareList) {
