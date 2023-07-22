@@ -1,6 +1,9 @@
 $softwareList = @(
     "git.install",
     "googlechrome",
+    "adobereader",
+    "k-litecodecpackfull",
+    "inkscape",
     "firefox",
     "discord",
     "steam",
