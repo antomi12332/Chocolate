@@ -7,6 +7,7 @@ $softwareList = @(
     "git.install",
     "github-desktop",
     "googlechrome",
+    "graphviz",
     "inkscape",
     "intellijidea-community",
     "irfanview",
@@ -23,7 +24,7 @@ $softwareList = @(
     "vlc",
     "vmware-workstation-player"
     "vnc-viewer",
-    "vscode",
+    "vscode"
 )
 
 foreach ($software in $softwareList) {
