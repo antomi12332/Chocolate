@@ -12,6 +12,7 @@ $softwareList = @(
     "intellijidea-community",
     "irfanview",
     "k-litecodecpackfull",
+    "mtputty",
     "nordvpn",
     "obs-studio",
     "openjdk",
