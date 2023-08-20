@@ -25,7 +25,8 @@ $softwareList = @(
     "vlc",
     "vmware-workstation-player"
     "vnc-viewer",
-    "vscode"
+    "vscode",
+    "nodejs"
 )
 
 foreach ($software in $softwareList) {
