@@ -23,7 +23,6 @@ $softwareList = @(
     "twine",
     "virtualbox",
     "vlc",
-    "vmware-workstation-player"
     "vnc-viewer",
     "vscode",
     "nodejs"
