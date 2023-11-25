@@ -11,8 +11,10 @@ $softwareList = @(
     "intellijidea-community",
     "irfanview",
     "k-litecodecpackfull",
+    "mongodb-compass",
     "mtputty",
     "nordvpn",
+    "nvm",
     "obs-studio",
     "openjdk",
     "putty",
@@ -22,8 +24,7 @@ $softwareList = @(
     "twine",
     "vlc",
     "vnc-viewer",
-    "vscode",
-    "nodejs"
+    "vscode"
 )
 
 foreach ($software in $softwareList) {
