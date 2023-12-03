@@ -18,7 +18,6 @@ $softwareList = @(
     "obs-studio",
     "openjdk",
     "putty",
-    "python",
     "steam",
     "treesizefree",
     "twine",
