@@ -8,6 +8,7 @@ $softwareList = @(
     "github-desktop",
     "googlechrome",
     "graphviz",
+    "inkscape",
     "intellijidea-community",
     "irfanview",
     "k-litecodecpackfull",
