@@ -8,7 +8,6 @@ $softwareList = @(
     "graphviz",
     "icue",
     "inkscape",
-    "intellijidea-community",
     "irfanview",
     "k-litecodecpackfull",
     "mongodb-compass",
