@@ -19,6 +19,7 @@ $softwareList = @(
     "putty",
     "steam",
     "treesizefree",
+    "xmind"
     "vlc",
     "vnc-viewer",
     "vscode"
