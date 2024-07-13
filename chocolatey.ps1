@@ -4,6 +4,7 @@ $softwareList = @(
     "discord",
     "filezilla",
     "firefox",
+    "freecad",
     "github-desktop",
     "icue",
     "inkscape",
