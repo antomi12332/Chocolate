@@ -41,12 +41,6 @@ sudo pacman -S --noconfirm \
 # Install file system support
 echo "Installing file system support..."
 sudo pacman -S --noconfirm \
-    ntfs-3g \
-    exfat-progs \
-    unrar \
-    p7zip \
-    unzip \
-    zip \
     cifs-utils
 
 # Install Thunderbolt/USB4 support for eGPU
@@ -244,6 +238,10 @@ yay -S --noconfirm visual-studio-code-bin
 # Install additional AUR packages
 echo "Installing additional AUR packages..."
 yay -S --noconfirm postman-bin protonup-qt
+
+# Install 7zip from AUR
+echo "Installing 7zip from AUR..."
+yay -S --noconfirm 7-zip
 
 # ======================================
 # NODE.JS DEVELOPMENT ENVIRONMENT
