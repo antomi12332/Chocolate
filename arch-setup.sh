@@ -140,6 +140,17 @@ sudo systemctl enable sddm
 # GRAPHICS & GAMING
 # ======================================
 
+# Enable multilib repository for 32-bit support (needed for Steam and lib32 packages)
+echo "Enabling multilib repository..."
+if ! grep -q "^\[multilib\]" /etc/pacman.conf; then
+    echo "[multilib]" | sudo tee -a /etc/pacman.conf
+    echo "Include = /etc/pacman.d/mirrorlist" | sudo tee -a /etc/pacman.conf
+    sudo pacman -Sy --noconfirm
+    echo "Multilib repository enabled"
+else
+    echo "Multilib repository already enabled"
+fi
+
 # Install NVIDIA drivers and eGPU support
 echo "Installing NVIDIA drivers..."
 sudo pacman -S --noconfirm \
