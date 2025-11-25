@@ -140,22 +140,13 @@ sudo systemctl enable sddm
 # GRAPHICS & GAMING
 # ======================================
 
-# Install Vulkan support
-echo "Installing Vulkan support..."
-sudo pacman -S --noconfirm \
-    vulkan-icd-loader \
-    lib32-vulkan-icd-loader \
-    vulkan-tools
-
 # Install NVIDIA drivers and eGPU support
 echo "Installing NVIDIA drivers..."
 sudo pacman -S --noconfirm \
     nvidia \
     nvidia-utils \
     lib32-nvidia-utils \
-    nvidia-settings \
-    vulkan-nvidia \
-    lib32-vulkan-nvidia
+    nvidia-settings
 
 # Install Steam
 echo "Installing Steam..."
@@ -350,9 +341,6 @@ echo "Docker: $(docker --version 2>/dev/null || echo 'Not available - may need l
 echo "Node.js: $(node --version 2>/dev/null || echo 'Not available - restart shell')"
 echo "SSH: $(ssh -V 2>&1 | head -n1)"
 echo ""
-echo "Checking Vulkan..."
-vulkaninfo --summary 2>/dev/null | grep -E "Vulkan Instance|GPU" || echo "Run 'vulkaninfo' for details"
-echo ""
 echo "Checking NVIDIA..."
 nvidia-smi || echo "NVIDIA driver check failed - may need reboot"
 echo ""
@@ -396,7 +384,6 @@ echo "  ✓ Audacity (run with: audacity)"
 echo "  ✓ Inkscape (run with: inkscape)"
 echo "  ✓ Fastfetch (run with: fastfetch)"
 echo "  ✓ Timeshift (system backup)"
-echo "  ✓ Vulkan support"
 echo "  ✓ NVIDIA drivers with eGPU support"
 echo "  ✓ Thunderbolt/USB4 support (bolt daemon)"
 echo "  ✓ Bluetooth support"
