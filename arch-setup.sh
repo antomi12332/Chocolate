@@ -1,12 +1,12 @@
 #!/bin/bash
 
 # Arch Linux Setup Script
-# This script installs a minimalistic KDE environment with development tools
+# This script installs Hyprland with development tools
 
 set -e  # Exit on error
 
 echo "========================================"
-echo "Arch Linux Setup Script"
+echo "Arch Linux Setup Script - Hyprland"
 echo "========================================"
 
 # Update system
@@ -17,38 +17,9 @@ sudo pacman -Syu --noconfirm
 echo "Installing essential packages..."
 sudo pacman -S --noconfirm base-devel git wget curl
 
-# Install minimalistic KDE Plasma
-echo "Installing minimalistic KDE Plasma..."
-sudo pacman -S --noconfirm \
-    plasma-desktop \
-    konsole \
-    dolphin \
-    sddm \
-    kde-gtk-config \
-    breeze-gtk \
-    plasma-nm \
-    plasma-pa \
-    powerdevil \
-    bluedevil \
-    kscreen \
-    kde-cli-tools \
-    xdg-desktop-portal-kde
-
-# Enable SDDM display manager
-echo "Enabling SDDM..."
-sudo systemctl enable sddm
-
-# Install essential KDE utilities and file system support
-echo "Installing essential KDE utilities..."
-sudo pacman -S --noconfirm \
-    ark \
-    kate \
-    kcalc \
-    spectacle \
-    gwenview \
-    okular \
-    kwalletmanager \
-    partitionmanager
+# ======================================
+# SYSTEM INFRASTRUCTURE
+# ======================================
 
 # Install audio support
 echo "Installing audio support..."
@@ -71,11 +42,109 @@ sudo pacman -S --noconfirm \
 echo "Installing file system support..."
 sudo pacman -S --noconfirm \
     ntfs-3g \
-    exfat-utils \
+    exfat-progs \
     unrar \
     p7zip \
     unzip \
-    zip
+    zip \
+    cifs-utils
+
+# Install Thunderbolt/USB4 support for eGPU
+echo "Installing Thunderbolt/USB4 support..."
+sudo pacman -S --noconfirm bolt
+
+# Enable Thunderbolt service
+echo "Enabling Thunderbolt service..."
+sudo systemctl enable bolt
+
+# Install Bluetooth support
+echo "Installing Bluetooth support..."
+sudo pacman -S --noconfirm bluez bluez-utils
+
+# Enable Bluetooth service
+echo "Enabling Bluetooth service..."
+sudo systemctl enable bluetooth
+
+# Install SSH
+echo "Installing OpenSSH..."
+sudo pacman -S --noconfirm openssh
+
+# ======================================
+# HYPRLAND & WAYLAND COMPONENTS
+# ======================================
+
+# Install Hyprland and essential components
+echo "Installing Hyprland..."
+sudo pacman -S --noconfirm \
+    hyprland \
+    xdg-desktop-portal-hyprland \
+    qt5-wayland \
+    qt6-wayland \
+    polkit-kde-agent
+
+# Install Wayland essentials
+echo "Installing Wayland essentials..."
+sudo pacman -S --noconfirm \
+    wayland \
+    wayland-protocols \
+    xorg-xwayland
+
+# Install terminal emulator
+echo "Installing terminal emulator..."
+sudo pacman -S --noconfirm kitty
+
+# Install application launcher
+echo "Installing application launcher..."
+sudo pacman -S --noconfirm wofi
+
+# Install status bar
+echo "Installing Waybar..."
+sudo pacman -S --noconfirm waybar
+
+# Install notification daemon
+echo "Installing notification daemon..."
+sudo pacman -S --noconfirm mako
+
+# Install file manager
+echo "Installing file manager..."
+sudo pacman -S --noconfirm thunar \
+    thunar-archive-plugin \
+    thunar-media-tags-plugin \
+    thunar-volman \
+    gvfs \
+    gvfs-mtp \
+    gvfs-smb
+
+# Install essential utilities
+echo "Installing essential utilities..."
+sudo pacman -S --noconfirm \
+    brightnessctl \
+    playerctl \
+    pavucontrol \
+    network-manager-applet \
+    blueman \
+    grim \
+    slurp \
+    wl-clipboard \
+    cliphist \
+    swaylock \
+    swayidle
+
+# Install text editor
+echo "Installing text editor..."
+sudo pacman -S --noconfirm geany
+
+# Install display manager
+echo "Installing SDDM display manager..."
+sudo pacman -S --noconfirm sddm
+
+# Enable SDDM display manager
+echo "Enabling SDDM..."
+sudo systemctl enable sddm
+
+# ======================================
+# GRAPHICS & GAMING
+# ======================================
 
 # Install Vulkan support
 echo "Installing Vulkan support..."
@@ -94,9 +163,13 @@ sudo pacman -S --noconfirm \
     vulkan-nvidia \
     lib32-vulkan-nvidia
 
-# Install SSH for ssh-keygen
-echo "Installing OpenSSH..."
-sudo pacman -S --noconfirm openssh
+# Install Steam
+echo "Installing Steam..."
+sudo pacman -S --noconfirm steam
+
+# ======================================
+# DEVELOPMENT TOOLS
+# ======================================
 
 # Install Godot Engine
 echo "Installing Godot Engine..."
@@ -106,29 +179,42 @@ sudo pacman -S --noconfirm godot
 echo "Installing Blender..."
 sudo pacman -S --noconfirm blender
 
-# Install Steam
-echo "Installing Steam..."
-sudo pacman -S --noconfirm steam
+# Install Docker
+echo "Installing Docker..."
+sudo pacman -S --noconfirm docker
 
-# Install CIFS utilities for network drive mounting
-echo "Installing CIFS utilities..."
-sudo pacman -S --noconfirm cifs-utils
+# Enable Docker service
+echo "Enabling Docker service..."
+sudo systemctl enable docker
 
-# Install Thunderbolt/USB4 support for eGPU
-echo "Installing Thunderbolt/USB4 support..."
-sudo pacman -S --noconfirm bolt
+# Add user to docker group
+echo "Adding user to docker group..."
+sudo usermod -aG docker $USER
 
-# Enable Thunderbolt service
-echo "Enabling Thunderbolt service..."
-sudo systemctl enable bolt
+# ======================================
+# MULTIMEDIA & CREATIVE TOOLS
+# ======================================
 
-# Install Bluetooth support
-echo "Installing Bluetooth support..."
-sudo pacman -S --noconfirm bluez bluez-utils
+# Install media and creative applications
+echo "Installing multimedia and creative tools..."
+sudo pacman -S --noconfirm \
+    vlc \
+    audacity \
+    inkscape
 
-# Enable Bluetooth service
-echo "Enabling Bluetooth service..."
-sudo systemctl enable bluetooth
+# ======================================
+# UTILITIES
+# ======================================
+
+# Install system utilities
+echo "Installing system utilities..."
+sudo pacman -S --noconfirm \
+    fastfetch \
+    timeshift
+
+# ======================================
+# AUR HELPER & AUR PACKAGES
+# ======================================
 
 # Install yay AUR helper
 echo "Installing yay AUR helper..."
@@ -151,6 +237,40 @@ yay -S --noconfirm google-chrome
 echo "Installing Obsidian from AUR..."
 yay -S --noconfirm obsidian
 
+# Install Visual Studio Code from AUR
+echo "Installing Visual Studio Code from AUR..."
+yay -S --noconfirm visual-studio-code-bin
+
+# Install additional AUR packages
+echo "Installing additional AUR packages..."
+yay -S --noconfirm postman-bin protonup-qt
+
+# ======================================
+# NODE.JS DEVELOPMENT ENVIRONMENT
+# ======================================
+
+# Install NVM (Node Version Manager)
+echo "Installing NVM (Node Version Manager)..."
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+
+# Source NVM for current session
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+# Install latest LTS version of Node.js
+echo "Installing Node.js LTS via NVM..."
+if command -v nvm &> /dev/null; then
+    nvm install --lts
+    nvm use --lts
+    echo "Node.js $(node --version) installed"
+else
+    echo "NVM will be available after shell restart"
+fi
+
+# ======================================
+# USER CONFIGURATION
+# ======================================
+
 # Generate SSH key (optional, user can skip)
 echo "========================================"
 read -p "Do you want to generate an SSH key? (y/n): " generate_ssh
@@ -160,6 +280,10 @@ if [[ $generate_ssh == "y" || $generate_ssh == "Y" ]]; then
     echo "SSH key generated! Public key:"
     cat ~/.ssh/id_ed25519.pub
 fi
+
+# ======================================
+# NETWORK DRIVE CONFIGURATION
+# ======================================
 
 # Setup network drive mount
 echo "========================================"
@@ -192,6 +316,10 @@ sudo mount -a 2>/dev/null && echo "Network drive mounted successfully at $MOUNT_
 echo "Setting permissions for network drive..."
 sudo chown -R $(whoami):$(whoami) "$MOUNT_POINT" 2>/dev/null || echo "Will set permissions after first successful mount"
 
+# ======================================
+# NVIDIA & eGPU CONFIGURATION
+# ======================================
+
 # Configure NVIDIA for eGPU (create configuration)
 echo "Creating NVIDIA configuration..."
 sudo mkdir -p /etc/modprobe.d
@@ -204,6 +332,10 @@ if ! grep -q "nvidia" /etc/mkinitcpio.conf; then
     sudo mkinitcpio -P
 fi
 
+# ======================================
+# VERIFICATION SCRIPT
+# ======================================
+
 # Create verification script
 echo "Creating verification script..."
 cat > ~/verify-setup.sh << 'EOF'
@@ -215,6 +347,9 @@ echo "Git: $(git --version)"
 echo "Godot: $(which godot)"
 echo "Blender: $(which blender)"
 echo "Google Chrome: $(which google-chrome-stable)"
+echo "VS Code: $(which code)"
+echo "Docker: $(docker --version 2>/dev/null || echo 'Not available - may need logout')"
+echo "Node.js: $(node --version 2>/dev/null || echo 'Not available - restart shell')"
 echo "SSH: $(ssh -V 2>&1 | head -n1)"
 echo ""
 echo "Checking Vulkan..."
@@ -223,22 +358,46 @@ echo ""
 echo "Checking NVIDIA..."
 nvidia-smi || echo "NVIDIA driver check failed - may need reboot"
 echo ""
+echo "Checking services..."
+systemctl is-enabled sddm && echo "SDDM: enabled" || echo "SDDM: not enabled"
+systemctl is-enabled docker && echo "Docker: enabled" || echo "Docker: not enabled"
+systemctl is-enabled bluetooth && echo "Bluetooth: enabled" || echo "Bluetooth: not enabled"
+systemctl is-enabled bolt && echo "Thunderbolt: enabled" || echo "Thunderbolt: not enabled"
+echo ""
 echo "=== Verification Complete ==="
 EOF
 chmod +x ~/verify-setup.sh
+
+# ======================================
+# SETUP COMPLETE
+# ======================================
 
 echo "========================================"
 echo "Setup Complete!"
 echo "========================================"
 echo ""
 echo "Installed components:"
-echo "  ✓ Minimalistic KDE Plasma Desktop"
+echo "  ✓ Hyprland Wayland Compositor"
+echo "  ✓ Kitty terminal (run with: kitty)"
+echo "  ✓ Wofi app launcher (run with: wofi)"
+echo "  ✓ Waybar status bar"
+echo "  ✓ Thunar file manager (run with: thunar)"
 echo "  ✓ Git"
 echo "  ✓ Godot Engine (run with: godot)"
 echo "  ✓ Blender (run with: blender)"
 echo "  ✓ Google Chrome (run with: google-chrome-stable)"
 echo "  ✓ Obsidian (run with: obsidian)"
+echo "  ✓ Visual Studio Code (run with: code)"
 echo "  ✓ Steam (run with: steam)"
+echo "  ✓ NVM (Node Version Manager)"
+echo "  ✓ Docker (run with: docker)"
+echo "  ✓ Postman (run with: postman)"
+echo "  ✓ ProtonUp-Qt (Proton version manager)"
+echo "  ✓ VLC Media Player (run with: vlc)"
+echo "  ✓ Audacity (run with: audacity)"
+echo "  ✓ Inkscape (run with: inkscape)"
+echo "  ✓ Fastfetch (run with: fastfetch)"
+echo "  ✓ Timeshift (system backup)"
 echo "  ✓ Vulkan support"
 echo "  ✓ NVIDIA drivers with eGPU support"
 echo "  ✓ Thunderbolt/USB4 support (bolt daemon)"
@@ -249,12 +408,77 @@ echo ""
 echo "Next steps:"
 echo "  1. Reboot your system: sudo reboot"
 echo "  2. After reboot, run: ~/verify-setup.sh"
-echo "  3. Log in to KDE Plasma desktop environment"
-echo "  4. Authorize Thunderbolt devices with: boltctl"
-echo "  5. Manage Bluetooth devices with: bluetoothctl"
+echo "  3. Log in to Hyprland from SDDM"
+echo "  4. Press SUPER+Q to open terminal (kitty)"
+echo "  5. Press SUPER+D to open app launcher (wofi)"
+echo "  6. Authorize Thunderbolt devices with: boltctl"
+echo "  7. Manage Bluetooth devices with: bluetoothctl"
+echo ""
+echo "Hyprland keybindings (default):"
+echo "  SUPER+Q = Terminal"
+echo "  SUPER+C = Close window"
+echo "  SUPER+M = Exit Hyprland"
+echo "  SUPER+E = File manager"
+echo "  SUPER+V = Toggle floating"
+echo "  SUPER+D = App launcher"
+echo "  SUPER+P = Pseudo tiling"
+echo "  SUPER+J = Toggle split"
 echo ""
 echo "Note: For eGPU, make sure it's connected before boot"
 echo "Note: Use 'boltctl list' to see Thunderbolt devices"
 echo "Note: Use 'boltctl enroll <device-id>' to authorize devices"
 echo "Note: Use 'bluetoothctl' to pair and connect Bluetooth devices"
+echo "Note: Edit ~/.config/hypr/hyprland.conf to customize Hyprland"
+echo "Note: Use ProtonUp-Qt to manage Proton versions for Steam games"
+echo "Note: Use Timeshift to create system snapshots before major changes"
+echo ""
+echo "========================================"
+echo "MANUAL POST-INSTALLATION STEPS REQUIRED"
+echo "========================================"
+echo ""
+echo "After rebooting, complete these manual steps:"
+echo ""
+echo "1. NVM & Node.js Setup:"
+echo "   - Open a NEW terminal/shell session"
+echo "   - Run: source ~/.bashrc  (or restart your shell)"
+echo "   - Run: nvm install --lts"
+echo "   - Run: nvm use --lts"
+echo "   - Verify: node --version"
+echo ""
+echo "2. Docker Group Permissions:"
+echo "   - Log out and log back in (or reboot)"
+echo "   - Verify: docker ps  (should work without sudo)"
+echo ""
+echo "3. Network Drive Setup:"
+echo "   - IMPORTANT: Edit credentials in /root/.smbcredentials"
+echo "   - Run: sudo nano /root/.smbcredentials"
+echo "   - Replace ******* with actual username and password"
+echo "   - Save and exit"
+echo "   - Test mount: sudo mount -a"
+echo ""
+echo "4. SSH Key (if generated):"
+echo "   - Your public key is in: ~/.ssh/id_ed25519.pub"
+echo "   - Add it to GitHub/GitLab: cat ~/.ssh/id_ed25519.pub"
+echo "   - Start SSH agent: eval \"\$(ssh-agent -s)\""
+echo "   - Add key: ssh-add ~/.ssh/id_ed25519"
+echo ""
+echo "5. Thunderbolt/eGPU Authorization:"
+echo "   - Connect your eGPU/Thunderbolt device"
+echo "   - Run: boltctl list"
+echo "   - Run: boltctl enroll <device-uuid>"
+echo ""
+echo "6. NVIDIA Driver Verification:"
+echo "   - After reboot, run: nvidia-smi"
+echo "   - Check for your GPU in the output"
+echo "   - If using eGPU, ensure it's connected before boot"
+echo ""
+echo "7. Hyprland Configuration:"
+echo "   - Copy example config: cp /usr/share/hyprland/hyprland.conf ~/.config/hypr/"
+echo "   - Edit: nano ~/.config/hypr/hyprland.conf"
+echo "   - Customize keybindings, monitors, etc."
+echo ""
+echo "8. Optional: Enable SSH Server:"
+echo "   - Run: sudo systemctl enable sshd"
+echo "   - Run: sudo systemctl start sshd"
+echo ""
 echo "========================================"
