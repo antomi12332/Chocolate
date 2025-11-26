@@ -151,13 +151,12 @@ else
     echo "Multilib repository already enabled"
 fi
 
-# Install NVIDIA drivers and eGPU support
-echo "Installing NVIDIA drivers..."
+# Install Vulkan support
+echo "Installing Vulkan support..."
 sudo pacman -S --noconfirm \
-    nvidia \
-    nvidia-utils \
-    lib32-nvidia-utils \
-    nvidia-settings
+    vulkan-radeon \
+    vulkan-icd-loader \
+    vulkan-tools
 
 # Install Steam
 echo "Installing Steam..."
@@ -463,17 +462,12 @@ echo "   - Connect your eGPU/Thunderbolt device"
 echo "   - Run: boltctl list"
 echo "   - Run: boltctl enroll <device-uuid>"
 echo ""
-echo "6. NVIDIA Driver Verification:"
-echo "   - After reboot, run: nvidia-smi"
-echo "   - Check for your GPU in the output"
-echo "   - If using eGPU, ensure it's connected before boot"
-echo ""
-echo "7. Hyprland Configuration:"
+echo "6. Hyprland Configuration:"
 echo "   - Copy example config: cp /usr/share/hyprland/hyprland.conf ~/.config/hypr/"
 echo "   - Edit: nano ~/.config/hypr/hyprland.conf"
 echo "   - Customize keybindings, monitors, etc."
 echo ""
-echo "8. Optional: Enable SSH Server:"
+echo "7. Optional: Enable SSH Server:"
 echo "   - Run: sudo systemctl enable sshd"
 echo "   - Run: sudo systemctl start sshd"
 echo ""
