@@ -1,13 +1,13 @@
 #!/bin/bash
 
 # Arch Linux Setup Script
-# This script installs Hyprland with development tools
+# This script installs KDE Plasma with development tools
 
 set -e  # Exit on error
 
 echo "========================================"
-echo "Arch Linux Setup Script - Hyprland"
-echo "========================================"
+echo "Arch Linux Setup Script - KDE Plasma"
+echo "======================================="
 
 # Update system
 echo "Updating system..."
@@ -15,101 +15,70 @@ sudo pacman -Syu --noconfirm
 
 # Install essential packages
 echo "Installing essential packages..."
-sudo pacman -S --noconfirm base-devel git wget curl
+sudo pacman -S --noconfirm base-devel git wget curl openssh
 
 # ======================================
 # SYSTEM INFRASTRUCTURE
 # ======================================
 
-# Install audio support
-echo "Installing audio support..."
-sudo pacman -S --noconfirm \
-    pipewire \
-    pipewire-alsa \
-    pipewire-pulse \
-    pipewire-jack \
-    wireplumber
-
-# Install fonts
-echo "Installing fonts..."
-sudo pacman -S --noconfirm \
-    ttf-dejavu \
-    ttf-liberation \
-    noto-fonts \
-    noto-fonts-emoji
-
-# Install file system support
-echo "Installing file system support..."
-sudo pacman -S --noconfirm \
-    cifs-utils
-
-# Install Thunderbolt/USB4 support for eGPU
-echo "Installing Thunderbolt/USB4 support..."
-sudo pacman -S --noconfirm bolt
-
-# Enable Thunderbolt service
-echo "Enabling Thunderbolt service..."
-sudo systemctl enable bolt
-
-# Install Bluetooth support
-echo "Installing Bluetooth support..."
-sudo pacman -S --noconfirm bluez bluez-utils
-
-# Enable Bluetooth service
-echo "Enabling Bluetooth service..."
-sudo systemctl enable bluetooth
-
-# Install SSH
-echo "Installing OpenSSH..."
-sudo pacman -S --noconfirm openssh
-
+# KDE PLASMA & WAYLAND COMPONENTS
 # ======================================
-# HYPRLAND & WAYLAND COMPONENTS
-# ======================================
-
-# Install Hyprland and essential components
-echo "Installing Hyprland..."
+# Install KDE Plasma and essential components
+echo "Installing KDE Plasma..."
 sudo pacman -S --noconfirm \
-    hyprland \
-    xdg-desktop-portal-hyprland \
+    plasma \
+    plasma-wayland-session \
+    xdg-desktop-portal-kde \
     qt5-wayland \
     qt6-wayland \
-    polkit-kde-agent
+    polkit-kde-agent \
+    wireplumber
 
-# Install Wayland essentials
 echo "Installing Wayland essentials..."
 sudo pacman -S --noconfirm \
     wayland \
     wayland-protocols \
-    xorg-xwayland
+    xorg-xwayland \
+    noto-fonts \
+    noto-fonts-emoji
 
-# Install terminal emulator
-echo "Installing terminal emulator..."
-sudo pacman -S --noconfirm kitty
+# Install KDE applications
+echo "Installing KDE applications..."
+sudo pacman -S --noconfirm \
+    dolphin \
+    konsole \
+    ark \
+    kate \
+    spectacle
 
-# Install application launcher
-echo "Installing application launcher..."
-sudo pacman -S --noconfirm wofi
+echo "Installing PipeWire audio system..."
+sudo pacman -S --noconfirm \
+    pipewire \
+    pipewire-pulse \
+    pipewire-alsa \
+    pipewire-jack
 
-# Install status bar
-echo "Installing Waybar..."
-sudo pacman -S --noconfirm waybar
+echo "Installing NetworkManager..."
+sudo pacman -S --noconfirm networkmanager
+sudo systemctl enable NetworkManager
 
-# Install notification daemon
-echo "Installing notification daemon..."
-sudo pacman -S --noconfirm mako
+echo "Installing Bluetooth support..."
+sudo pacman -S --noconfirm \
+    bluez \
+    bluez-utils
+sudo systemctl enable bluetooth
 
-# Install file manager
-echo "Installing file manager..."
-sudo pacman -S --noconfirm thunar \
-    thunar-archive-plugin \
-    thunar-media-tags-plugin \
-    thunar-volman \
+echo "Installing file system support..."
+sudo pacman -S --noconfirm \
     gvfs \
     gvfs-mtp \
-    gvfs-smb
+    gvfs-smb \
+    cifs-utils
 
-# Install essential utilities
+echo "Installing Thunderbolt support..."
+sudo pacman -S --noconfirm bolt
+sudo systemctl enable bolt
+
 echo "Installing essential utilities..."
 sudo pacman -S --noconfirm \
     brightnessctl \
@@ -117,16 +86,8 @@ sudo pacman -S --noconfirm \
     pavucontrol \
     network-manager-applet \
     blueman \
-    grim \
-    slurp \
     wl-clipboard \
-    cliphist \
-    swaylock \
-    swayidle
-
-# Install text editor
-echo "Installing text editor..."
-sudo pacman -S --noconfirm geany
+    cliphist
 
 # Install display manager
 echo "Installing SDDM display manager..."
@@ -151,11 +112,24 @@ else
     echo "Multilib repository already enabled"
 fi
 
-# Install Vulkan support
-echo "Installing Vulkan support..."
+# Install NVIDIA drivers and Vulkan support
+echo "Installing NVIDIA drivers..."
 sudo pacman -S --noconfirm \
+    nvidia \
+    nvidia-utils \
+    nvidia-settings \
+    lib32-nvidia-utils
+
+echo "Installing Mesa and Vulkan support (AMD integrated + NVIDIA eGPU)..."
+sudo pacman -S --noconfirm \
+    mesa \
+    lib32-mesa \
     vulkan-radeon \
+    lib32-vulkan-radeon \
+    vulkan-nvidia \
+    lib32-vulkan-nvidia \
     vulkan-icd-loader \
+    lib32-vulkan-icd-loader \
     vulkan-tools
 
 # Install Steam
@@ -250,7 +224,7 @@ yay -S --noconfirm 7-zip
 
 # Install NVM (Node Version Manager)
 echo "Installing NVM (Node Version Manager)..."
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
 
 # Source NVM for current session
 export NVM_DIR="$HOME/.nvm"
@@ -292,6 +266,10 @@ echo "Setting up network drive mount..."
 MOUNT_POINT="/mnt/share"
 sudo mkdir -p "$MOUNT_POINT"
 
+# Get current user's UID and GID
+USER_UID=$(id -u)
+USER_GID=$(id -g)
+
 # Create credentials file (secure)
 CREDS_FILE="/root/.smbcredentials"
 echo "username=*******" | sudo tee "$CREDS_FILE" > /dev/null
@@ -299,7 +277,7 @@ echo "password=*******" | sudo tee -a "$CREDS_FILE" > /dev/null
 sudo chmod 600 "$CREDS_FILE"
 
 # Add to fstab for permanent mounting
-FSTAB_ENTRY="//10.10.10.23/Anthony $MOUNT_POINT cifs credentials=$CREDS_FILE,uid=1000,gid=1000,iocharset=utf8 0 0"
+FSTAB_ENTRY="//10.10.10.23/Anthony $MOUNT_POINT cifs credentials=$CREDS_FILE,uid=$USER_UID,gid=$USER_GID,iocharset=utf8 0 0"
 if ! grep -q "10.10.10.23/Anthony" /etc/fstab; then
     echo "$FSTAB_ENTRY" | sudo tee -a /etc/fstab > /dev/null
     echo "Network drive added to fstab"
@@ -323,12 +301,19 @@ sudo chown -R $(whoami):$(whoami) "$MOUNT_POINT" 2>/dev/null || echo "Will set p
 echo "Creating NVIDIA configuration..."
 sudo mkdir -p /etc/modprobe.d
 echo "options nvidia NVreg_DynamicPowerManagement=0x02" | sudo tee /etc/modprobe.d/nvidia-pm.conf
+echo "options nvidia-drm modeset=1" | sudo tee /etc/modprobe.d/nvidia-drm.conf
 
 # Update mkinitcpio for NVIDIA early loading
 echo "Updating mkinitcpio for NVIDIA..."
 if ! grep -q "nvidia" /etc/mkinitcpio.conf; then
-    sudo sed -i 's/MODULES=(\(.*\))/MODULES=(\1 nvidia nvidia_modeset nvidia_uvm nvidia_drm)/' /etc/mkinitcpio.conf
+    # Backup original config
+    sudo cp /etc/mkinitcpio.conf /etc/mkinitcpio.conf.backup
+    # Add NVIDIA modules to MODULES array
+    sudo sed -i '/^MODULES=/c\MODULES=(nvidia nvidia_modeset nvidia_uvm nvidia_drm)' /etc/mkinitcpio.conf
     sudo mkinitcpio -P
+    echo "NVIDIA modules added to initramfs"
+else
+    echo "NVIDIA modules already in mkinitcpio.conf"
 fi
 
 # ======================================
@@ -356,9 +341,13 @@ nvidia-smi || echo "NVIDIA driver check failed - may need reboot"
 echo ""
 echo "Checking services..."
 systemctl is-enabled sddm && echo "SDDM: enabled" || echo "SDDM: not enabled"
+systemctl is-enabled NetworkManager && echo "NetworkManager: enabled" || echo "NetworkManager: not enabled"
 systemctl is-enabled docker && echo "Docker: enabled" || echo "Docker: not enabled"
 systemctl is-enabled bluetooth && echo "Bluetooth: enabled" || echo "Bluetooth: not enabled"
 systemctl is-enabled bolt && echo "Thunderbolt: enabled" || echo "Thunderbolt: not enabled"
+echo ""
+echo "Checking audio..."
+pactl info &>/dev/null && echo "PipeWire: running" || echo "PipeWire: not running"
 echo ""
 echo "=== Verification Complete ==="
 EOF
@@ -373,11 +362,11 @@ echo "Setup Complete!"
 echo "========================================"
 echo ""
 echo "Installed components:"
-echo "  ✓ Hyprland Wayland Compositor"
-echo "  ✓ Kitty terminal (run with: kitty)"
-echo "  ✓ Wofi app launcher (run with: wofi)"
-echo "  ✓ Waybar status bar"
-echo "  ✓ Thunar file manager (run with: thunar)"
+echo "  ✓ KDE Plasma Desktop Environment"
+echo "  ✓ Konsole terminal (run with: konsole)"
+echo "  ✓ Dolphin file manager (run with: dolphin)"
+echo "  ✓ Kate text editor (run with: kate)"
+echo "  ✓ Spectacle screenshot tool (run with: spectacle)"
 echo "  ✓ Git"
 echo "  ✓ Godot Engine (run with: godot)"
 echo "  ✓ Blender (run with: blender)"
@@ -403,27 +392,22 @@ echo ""
 echo "Next steps:"
 echo "  1. Reboot your system: sudo reboot"
 echo "  2. After reboot, run: ~/verify-setup.sh"
-echo "  3. Log in to Hyprland from SDDM"
-echo "  4. Press SUPER+Q to open terminal (kitty)"
-echo "  5. Press SUPER+D to open app launcher (wofi)"
-echo "  6. Authorize Thunderbolt devices with: boltctl"
-echo "  7. Manage Bluetooth devices with: bluetoothctl"
+echo "  3. Log in to Plasma (Wayland or X11) from SDDM"
+echo "  4. Use the Application Launcher to open apps"
+echo "  5. Authorize Thunderbolt devices with: boltctl"
+echo "  6. Manage Bluetooth devices with: bluetoothctl"
 echo ""
-echo "Hyprland keybindings (default):"
-echo "  SUPER+Q = Terminal"
-echo "  SUPER+C = Close window"
-echo "  SUPER+M = Exit Hyprland"
-echo "  SUPER+E = File manager"
-echo "  SUPER+V = Toggle floating"
-echo "  SUPER+D = App launcher"
-echo "  SUPER+P = Pseudo tiling"
-echo "  SUPER+J = Toggle split"
+echo "KDE Plasma Tips:"
+echo "  - Open System Settings to customize desktop, shortcuts, and displays"
+echo "  - Right-click desktop to add widgets and configure panels"
+echo "  - Use Meta (SUPER) key to open Application Launcher"
+echo "  - Configure display settings in System Settings > Display"
 echo ""
 echo "Note: For eGPU, make sure it's connected before boot"
 echo "Note: Use 'boltctl list' to see Thunderbolt devices"
 echo "Note: Use 'boltctl enroll <device-id>' to authorize devices"
 echo "Note: Use 'bluetoothctl' to pair and connect Bluetooth devices"
-echo "Note: Edit ~/.config/hypr/hyprland.conf to customize Hyprland"
+echo "Note: KDE settings are available in System Settings"
 echo "Note: Use ProtonUp-Qt to manage Proton versions for Steam games"
 echo "Note: Use Timeshift to create system snapshots before major changes"
 echo ""
@@ -462,10 +446,10 @@ echo "   - Connect your eGPU/Thunderbolt device"
 echo "   - Run: boltctl list"
 echo "   - Run: boltctl enroll <device-uuid>"
 echo ""
-echo "6. Hyprland Configuration:"
-echo "   - Copy example config: cp /usr/share/hyprland/hyprland.conf ~/.config/hypr/"
-echo "   - Edit: nano ~/.config/hypr/hyprland.conf"
-echo "   - Customize keybindings, monitors, etc."
+echo "6. KDE Plasma Configuration:"
+echo "   - Open System Settings"
+echo "   - Customize desktop, shortcuts, and displays"
+echo "   - Configure display settings for multi-monitor/eGPU setup"
 echo ""
 echo "7. Optional: Enable SSH Server:"
 echo "   - Run: sudo systemctl enable sshd"
