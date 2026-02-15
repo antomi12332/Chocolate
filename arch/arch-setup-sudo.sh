@@ -19,6 +19,10 @@ sudo pacman -Syu --noconfirm
 echo "Installing essential packages..."
 sudo pacman -S --noconfirm base-devel git wget curl openssh
 
+# Install Linux kernel headers (required for NVIDIA driver)
+echo "Installing Linux kernel headers..."
+sudo pacman -S --noconfirm linux-headers
+
 # ======================================
 # SYSTEM INFRASTRUCTURE
 # ======================================
@@ -116,10 +120,20 @@ fi
 # Install NVIDIA drivers and Vulkan support
 echo "Installing NVIDIA drivers..."
 sudo pacman -S --noconfirm \
-    nvidia \
+    nvidia-open \
     nvidia-utils \
     nvidia-settings \
     lib32-nvidia-utils
+
+# Blacklist nouveau driver (conflicts with NVIDIA)
+echo "Blacklisting nouveau driver..."
+if [ ! -f /etc/modprobe.d/blacklist-nouveau.conf ]; then
+    echo "blacklist nouveau" | sudo tee /etc/modprobe.d/blacklist-nouveau.conf
+    echo "options nouveau modeset=0" | sudo tee -a /etc/modprobe.d/blacklist-nouveau.conf
+    echo "Nouveau driver blacklisted"
+else
+    echo "Nouveau driver already blacklisted"
+fi
 
 echo "Installing Mesa and Vulkan support (AMD integrated + NVIDIA eGPU)..."
 sudo pacman -S --noconfirm \
@@ -289,6 +303,31 @@ if ! grep -q "nvidia" /etc/mkinitcpio.conf; then
     echo "NVIDIA modules added to initramfs"
 else
     echo "NVIDIA modules already in mkinitcpio.conf"
+fi
+
+# Create pacman hook to rebuild initramfs on NVIDIA updates
+echo "Creating NVIDIA pacman hook..."
+sudo mkdir -p /etc/pacman.d/hooks
+if [ ! -f /etc/pacman.d/hooks/nvidia.hook ]; then
+    sudo tee /etc/pacman.d/hooks/nvidia.hook > /dev/null << 'EOF'
+[Trigger]
+Operation=Install
+Operation=Upgrade
+Operation=Remove
+Type=Package
+Target=nvidia-open
+Target=linux
+
+[Action]
+Description=Update NVIDIA module in initcpio
+Depends=mkinitcpio
+When=PostTransaction
+NeedsTargets
+Exec=/bin/sh -c 'while read -r trg; do case $trg in linux*) exit 0; esac; done; /usr/bin/mkinitcpio -P'
+EOF
+    echo "NVIDIA pacman hook created"
+else
+    echo "NVIDIA pacman hook already exists"
 fi
 
 # ======================================
