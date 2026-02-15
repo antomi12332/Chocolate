@@ -1,13 +1,47 @@
 #!/bin/bash
 
-# Arch Linux Setup Script
-# This script installs KDE Plasma with development tools in LF
+# Arch Linux Setup Script - Wrapper
+# This script runs both sudo and user setup scripts in sequence
 
 set -e  # Exit on error
 
 echo "========================================"
 echo "Arch Linux Setup Script - KDE Plasma"
 echo "======================================="
+echo ""
+echo "This setup is now split into two parts:"
+echo "  1. arch-setup-sudo.sh  - System packages (requires sudo)"
+echo "  2. arch-setup-user.sh  - User configuration (no sudo)"
+echo ""
+read -p "Run both scripts now? (y/n): " run_both
+
+if [[ $run_both == "y" || $run_both == "Y" ]]; then
+    echo ""
+    echo "Running system setup (requires sudo)..."
+    ./arch-setup-sudo.sh
+    
+    echo ""
+    echo "Running user setup (no sudo)..."
+    ./arch-setup-user.sh
+    
+    echo ""
+    echo "========================================"
+    echo "Complete Setup Finished!"
+    echo "========================================"
+    echo "Reboot recommended: sudo reboot"
+else
+    echo ""
+    echo "Setup cancelled. You can run scripts individually:"
+    echo "  ./arch-setup-sudo.sh   # System packages"
+    echo "  ./arch-setup-user.sh   # User config"
+fi
+
+exit 0
+
+# ======================================
+# LEGACY MONOLITHIC SCRIPT BELOW
+# (Kept for reference, not executed)
+# ======================================
 
 # Update system
 echo "Updating system..."
@@ -130,7 +164,10 @@ sudo pacman -S --noconfirm \
     lib32-vulkan-nvidia \
     vulkan-icd-loader \
     lib32-vulkan-icd-loader \
-    vulkan-tools
+    vulkan-validation-layers \
+    lib32-vulkan-validation-layers \
+    vulkan-tools \
+    vulkan-headers
 
 # Install Steam
 echo "Installing Steam..."
@@ -338,6 +375,9 @@ echo "SSH: $(ssh -V 2>&1 | head -n1)"
 echo ""
 echo "Checking NVIDIA..."
 nvidia-smi || echo "NVIDIA driver check failed - may need reboot"
+echo ""
+echo "Checking Vulkan..."
+vulkaninfo --summary 2>/dev/null || echo "Vulkan check failed - may need reboot"
 echo ""
 echo "Checking services..."
 systemctl is-enabled sddm && echo "SDDM: enabled" || echo "SDDM: not enabled"
