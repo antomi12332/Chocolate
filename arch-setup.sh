@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Arch Linux Setup Script
-# This script installs KDE Plasma with development tools
+# This script installs KDE Plasma with development tools in LF
 
 set -e  # Exit on error
 
