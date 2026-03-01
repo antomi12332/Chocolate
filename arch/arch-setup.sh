@@ -119,7 +119,6 @@ sudo pacman -S --noconfirm \
     playerctl \
     pavucontrol \
     network-manager-applet \
-    blueman \
     wl-clipboard \
     cliphist
 
