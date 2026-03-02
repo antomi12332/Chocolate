@@ -67,6 +67,9 @@ echo "Installing NetworkManager..."
 sudo pacman -S --noconfirm networkmanager
 sudo systemctl enable NetworkManager
 
+echo "Installing WireGuard client tools..."
+sudo pacman -S --noconfirm wireguard-tools openresolv
+
 echo "Installing Bluetooth support..."
 sudo pacman -S --noconfirm \
     bluez \
