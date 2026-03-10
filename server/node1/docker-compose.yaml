@@ -1,0 +1,58 @@
+services:
+  gitlab:
+    image: gitlab/gitlab-ce:latest
+    container_name: gitlab-ce
+    restart: unless-stopped
+    hostname: gitlab.local
+    shm_size: "256m"
+    ports:
+      - "9080:80"
+      - "9443:443"
+      - "9022:22"
+    volumes:
+      - /home/anthony/appdata/gitlab-ce/config:/etc/gitlab
+      - /home/anthony/appdata/gitlab-ce/data:/var/opt/gitlab
+      - /home/anthony/appdata/gitlab-ce/log:/var/log/gitlab
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url 'http://10.10.10.61:9080'
+        gitlab_rails['gitlab_shell_ssh_port'] = 22
+    networks:
+      dev_net:
+        ipv4_address: 10.10.10.61
+
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - /home/anthony/appdata/mongodb/:/data/db
+    networks:
+      dev_net:
+        ipv4_address: 10.10.10.62
+
+  jenkins:
+    image: jenkins/jenkins:latest
+    container_name: jenkins
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      JAVA_OPTS: "-Xms1g -Xmx4g"
+    volumes:
+      - /home/anthony/appdata/jenkins:/var/jenkins_home
+    networks:
+      dev_net:
+        ipv4_address: 10.10.10.22
+
+networks:
+  dev_net:
+    driver: macvlan
+    driver_opts:
+      parent: ens18
+    ipam:
+      config:
+        - subnet: 10.10.10.0/24
+          gateway: 10.10.10.1
